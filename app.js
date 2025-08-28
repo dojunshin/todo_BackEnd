@@ -32,8 +32,6 @@ mongoose.connect(mongoURI, {useNewUrlParser:true})
     console.error('MongoDB connection error:', err)
 })
 
-const PORT = process.env.PORT || 5001
-
-app.listen(PORT, () => {
+app.listen(process.env.PORT || 5001, () => {
     console.log(`Server is running on port ${PORT}`)
 })
