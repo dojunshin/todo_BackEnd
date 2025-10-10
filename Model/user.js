@@ -38,6 +38,9 @@ userSchema.methods.toJSON = function() {
     // return this
     const user = this._doc; 
     delete user.password;   //항상 password를 제거하고 보냄.
+    delete user.__v;        //__v는 mongoose에서 관리하는 버전키
+    delete user.createdAt;
+    delete user.updatedAt;
     return user;
 }
 

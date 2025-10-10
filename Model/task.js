@@ -9,6 +9,12 @@ const taskSchema = new Schema({
     isComplete:{
         type: Boolean,
         required: true // 필수 값
+    },
+    //작성자 정보를 받아올 것. user.js에서 _id를 참조
+    author: {
+        type:Schema.Types.ObjectId,
+        ref:'User',
+        required:true // 필수 값
     }
 },{
     timestamps: true // 몇 시 몇 분 몇 초에 생성되었는지, 업데이트 되었는지 확인가능

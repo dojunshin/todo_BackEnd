@@ -7,11 +7,16 @@ const currentTime = new Date().toLocaleString('ko-KR', { timeZone: 'Asia/Seoul',
 //Request는 Header와 Body로 구성
 taskController.createTask = async (req, res) => {
 
+    const { userId } = req; //auth.controller.js에서 req.userId로 넘겨준 userId를 가져옴
+    //req로 하나, req.userId로 하나 값은 똑같음
+    // console.log('Authenticated userId:', req.userId); // 추가
+
     try {
         const {task, isComplete} = req.body //body에 있는 task와 isComplete를 가져옴
         const newTask = new Task({
             task,
-            isComplete
+            isComplete,
+            author: userId //author 필드에 userId 할당
         })
         await newTask.save() //저장
 
@@ -37,10 +42,21 @@ taskController.getTask = async (req,res) => {
 
         let taskList
 
+        //이 if 조건의 의미는 filter.task가 null이 아니면, 즉 쿼리스트링에 task가 있으면 그 조건으로 찾고,
+        //없으면 그냥 전체 다 찾음
         if (filter.task != null) {   
-            taskList = await Task.find(filter).select("-__v")
+            taskList = await Task.find(filter).select("-__v").populate("author")
         } else {
-            taskList = await Task.find({}).select("-__v")
+            //populate란 다른 컬렉션의 데이터를 조인해서 가져오는 것
+            //그리고 select("-__v")는 __v 필드를 제외하고 가져오라는 의미
+            /**
+             * "author": {
+                "_id": "68e364d51fb3512901d4e9d1",
+                "name": "test123",
+                "email": "test123@test123"
+            }, 이런 식으로 author 필드에 user 컬렉션의 데이터가 들어옴
+             */
+            taskList = await Task.find({}).select("-__v").populate("author")
         }
 
         res.status(200).json({status:'success', data:taskList}) //성공시 상태코드 200과 함께 성공 메시지와 taskList 반환

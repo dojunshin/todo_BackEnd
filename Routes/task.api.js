@@ -1,8 +1,9 @@
 const express = require('express')
 const taskController = require('../Controller/task.controller')
+const authController = require('../Controller/auth.controller')
 const router = express.Router()
 
-router.post ('/', taskController.createTask) //POST 요청을 처리하는 createTask 함수 연결
+router.post ('/', authController.authenticate,taskController.createTask) //POST 요청을 처리하는 createTask 함수 연결
 
 router.get('/', taskController.getTask) //GET 요청을 처리하는 getTask 함수 연결
 
